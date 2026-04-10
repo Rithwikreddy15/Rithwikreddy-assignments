@@ -1,0 +1,135 @@
+
+first intial table 
+
+create table VendorDetails (
+    VendorCode varchar(10),
+    VendorName varchar(50),
+    VendorPhone varchar(15),
+    ProductCode varchar(50),
+    ProductDescription varchar(100),
+    Price varchar(50),
+    Grade varchar(10),
+    Discount varchar(50)
+);
+
+inserting data init
+
+insert into VendorDetails values
+('vd001','AtoZSupplier','9090901010','pd001,pd002,pd006','Cement,Bricks,Cement','400,80,320','A,B,C','4,8,10'),
+('vd002','Greatgravity','9191912233','pd003','Centrifugal pump','10000','A','4'),
+('vd003','Powernet','8787871212','pd004','5g Internet','850','A','4'),
+('vd004','Gomobile','8686861313','pd005,pd007','Mobile phone,Feature phone','20000,5000','A,C','4,10');
+
+Now creating 1NF  (no multiple values in single column)
+
+create table Vendor_1NF (
+    VendorCode varchar(10),
+    VendorName varchar(50),
+    VendorPhone varchar(15),
+    ProductCode varchar(10),
+    ProductDescription varchar(100),
+    Price int,
+    Grade char(1),
+    Discount int
+);
+
+
+inserting into 1NF
+
+insert into Vendor_1NF values
+('vd001','AtoZSupplier','9090901010','pd001','Cement',400,'A',4),
+('vd001','AtoZSupplier','9090901010','pd002','Bricks',80,'B',8),
+('vd001','AtoZSupplier','9090901010','pd006','Cement',320,'C',10),
+('vd002','Greatgravity','9191912233','pd003','Centrifugal pump',10000,'A',4),
+('vd003','Powernet','8787871212','pd004','5g Internet',850,'A',4),
+('vd004','Gomobile','8686861313','pd005','Mobile phone',20000,'A',4),
+('vd004','Gomobile','8686861313','pd007','Feature phone',5000,'C',10);
+
+
+Now 2NF  (removing partial dependencies)
+
+vendor table:
+
+create table Vendor (
+    VendorCode varchar(10) primary key,
+    VendorName varchar(50),
+    VendorPhone varchar(15)
+);
+
+insert into Vendor values
+('vd001','AtoZSupplier','9090901010'),
+('vd002','Greatgravity','9191912233'),
+('vd003','Powernet','8787871212'),
+('vd004','Gomobile','8686861313');
+
+
+product table:
+
+create table Product (
+    ProductCode varchar(10) primary key,
+    ProductDescription varchar(100),
+    Price int,
+    Grade char(1)
+);
+
+
+insert into Product values
+('pd001','Cement',400,'A'),
+('pd002','Bricks',80,'B'),
+('pd003','Centrifugal pump',10000,'A'),
+('pd004','5g Internet',850,'A'),
+('pd005','Mobile phone',20000,'A'),
+('pd006','Cement',320,'C'),
+('pd007','Feature phone',5000,'C');
+
+
+vendor_product table :
+
+
+create table Vendor_Product (
+    VendorCode varchar(10),
+    ProductCode varchar(10),
+    primary key (VendorCode, ProductCode),
+    foreign key (VendorCode) references Vendor(VendorCode),
+    foreign key (ProductCode) references Product(ProductCode)
+);
+
+
+insert into Vendor_Product values
+('vd001','pd001'),
+('vd001','pd002'),
+('vd001','pd006'),
+('vd002','pd003'),
+('vd003','pd004'),
+('vd004','pd005'),
+('vd004','pd007');
+
+
+
+Now 3NF (removing transitive depencies)
+
+creating Grade table
+
+create table Grade_Discount (
+    Grade char(1) primary key,
+    Discount int
+);
+
+
+insert into Grade_Discount values
+('A',4),
+('B',8),
+('C',10);
+
+
+modifying the product table 
+
+create table Product_3NF (
+    ProductCode varchar(10) primary key,
+    ProductDescription varchar(100),
+    Price int,
+    Grade char(1),
+    foreign key (Grade) references Grade_Discount(Grade)
+);
+
+
