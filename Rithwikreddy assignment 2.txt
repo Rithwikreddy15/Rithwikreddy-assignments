@@ -3,7 +3,7 @@
 
 
 create database normalization;
-use database normalization;
+use normalization;
 
 #first intial table 
 
