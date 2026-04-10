@@ -1,5 +1,11 @@
+#Normalization of table 1nf,2nf,3nf
+#creating database and using it 
 
-first intial table 
+
+create database normalization;
+use database normalization;
+
+#first intial table 
 
 create table VendorDetails (
     VendorCode varchar(10),
@@ -12,7 +18,7 @@ create table VendorDetails (
     Discount varchar(50)
 );
 
-inserting data init
+#inserting data init
 
 insert into VendorDetails values
 ('vd001','AtoZSupplier','9090901010','pd001,pd002,pd006','Cement,Bricks,Cement','400,80,320','A,B,C','4,8,10'),
@@ -23,7 +29,7 @@ insert into VendorDetails values
 select * from VendorDetails;
 
 
-Now creating 1NF  (no multiple values in single column)
+#Now creating 1NF  (no multiple values in single column)
 
 create table Vendor_1NF (
     VendorCode varchar(10),
@@ -37,7 +43,7 @@ create table Vendor_1NF (
 );
 
 
-inserting into 1NF
+#inserting into 1NF
 
 insert into Vendor_1NF values
 ('vd001','AtoZSupplier','9090901010','pd001','Cement',400,'A',4),
@@ -51,9 +57,9 @@ insert into Vendor_1NF values
 select * from Vendor_1NF;
 
 
-Now 2NF  (removing partial dependencies)
+#Now 2NF  (removing partial dependencies)
 
-vendor table:
+#vendor table:
 
 create table Vendor (
     VendorCode varchar(10) primary key,
@@ -68,7 +74,7 @@ insert into Vendor values
 ('vd004','Gomobile','8686861313');
 
 
-product table:
+#product table:
 
 create table Product (
     ProductCode varchar(10) primary key,
@@ -88,7 +94,7 @@ insert into Product values
 ('pd007','Feature phone',5000,'C');
 
 
-vendor_product table :
+#vendor_product table :
 
 
 create table Vendor_Product (
@@ -114,9 +120,9 @@ select * from Product;
 select * from Vendor_Product;
 
 
-Now 3NF (removing transitive depencies)
+#Now 3NF (removing transitive depencies)
 
-creating Grade table
+#creating Grade table
 
 create table Grade_Discount (
     Grade char(1) primary key,
@@ -130,7 +136,7 @@ insert into Grade_Discount values
 ('C',10);
 
 
-modifying the product table 
+#modifying the product table 
 
 create table Product_3NF (
     ProductCode varchar(10) primary key,
