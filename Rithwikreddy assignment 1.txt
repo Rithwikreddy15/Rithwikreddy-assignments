@@ -1,0 +1,252 @@
+#Activity 1
+
+# creating database
+
+create database ABC_MIS;
+use ABC_MIS;
+
+# creating employee table
+create table employee (
+    empid int primary key auto_increment,
+    first_name varchar(100) not null,
+    last_name varchar(100),
+    contact varchar(10) not null unique,
+    email varchar(50) not null unique,
+    gender char(1),
+    address varchar(100) not null,
+    doj date not null,
+    check (gender in ('M','F'))
+);
+
+# creating project table
+create table project (
+    prjid int primary key auto_increment,
+    prj_name varchar(100) not null,
+    start_date date not null,
+    release_date date,
+    status varchar(50),
+    check (release_date > start_date),
+    check (status in ('Released','In progress','Initiated','Not started'))
+);
+
+# creating emp_proj table
+
+create table emp_proj (
+    empid int,
+    prjid int,
+    primary key (empid, prjid),
+    foreign key (empid) references employee(empid),
+    foreign key (prjid) references project(prjid)
+);
+
+# creating salary table
+create table salary (
+    empid int,
+    date date not null,
+    amount float,
+    remark varchar(100),
+    primary key (empid, date),
+    foreign key (empid) references employee(empid),
+    check (amount >= 35000)
+);
+
+# inserting data into employee
+insert into employee values
+(1,'Tim','Berley','9191910000','tim@timsworld.com','M','Chennai','2023-01-01'),
+(2,'Shafi','Nabi','9090900000','shafi@shafisworld.com','M','Delhi','2023-03-04'),
+(3,'Mahesh','Babu','8181810000','mb@mbsworld.com','M','Mumbai','2023-05-02'),
+(4,'Rekha',null,'9292920000','rek@reksworld.com','F','Patna','2023-05-01'),
+(5,'Rina','Chandra','9595950000','rina@rinasworld.com','F','Pune','2022-12-31');
+
+# inserting data into project
+insert into project values
+(1,'ACMS','2023-01-01','2023-12-31','In progress'),
+(2,'APMS','2022-01-01','2023-01-01','Released'),
+(3,'ERP','2023-01-01','2023-10-05','In progress'),
+(4,'MIS','2023-10-10','2024-11-30','Not started'),
+(5,'OPS','2023-12-31','2024-12-31','Not started');
+
+# inserting data into emp_proj
+insert into emp_proj values
+(1,1),
+(1,2),
+(2,1),
+(2,5),
+(3,2),
+(5,4);
+
+# inserting data into salary
+insert into salary values
+(1,'2023-01-01',35000,null),
+(1,'2023-02-01',35000,null),
+(1,'2023-03-01',30000,'tax deducted'),
+(1,'2023-04-01',35000,null),
+(1,'2023-05-01',35000,null),
+(2,'2023-01-01',35000,null),
+(2,'2023-02-01',35000,null),
+(2,'2023-03-01',30000,'tax deducted'),
+(2,'2023-04-01',35000,null),
+(2,'2023-05-01',35000,null),
+(3,'2023-01-01',40000,null),
+(3,'2023-02-01',40000,null),
+(3,'2023-03-01',35000,'tax deducted'),
+(3,'2023-04-01',36000,'leave deduction'),
+(3,'2023-05-01',40000,null),
+(4,'2023-01-01',37000,null),
+(4,'2023-02-01',35000,'tax deducted'),
+(4,'2023-03-01',33000,'leave deduction'),
+(4,'2023-04-01',37000,null),
+(4,'2023-05-01',37000,null),
+(5,'2023-01-01',45000,null),
+(5,'2023-02-01',45000,null),
+(5,'2023-03-01',43000,'tax deducted'),
+(5,'2023-04-01',41000,'leave deduction'),
+(5,'2023-05-01',40000,'leave deduction'),
+(5,'2023-06-01',40000,'leave deduction');
+
+
+# delete record
+delete from salary 
+where empid=5 and date='2023-06-01';
+
+
+# update record
+update salary
+set remark='loan adjustment'
+where empid=5 and date='2023-05-01';
+
+
+# display all tables
+select * from employee;
+select * from project;
+select * from emp_proj;
+select * from salary;
+
+#activity 2
+
+# tax calculation
+select empid, amount, date, amount*0.105 as Tax
+from salary;
+
+# tax and net salary
+select empid, amount, date,
+amount*0.105 as Tax,
+amount-(amount*0.105) as Net_Salary
+from salary;
+
+# net salary < 45000
+select *, amount-(amount*0.105) as Net_Salary
+from salary
+having Net_Salary < 45000;
+
+# doj between dates
+select * from employee
+where doj between '2013-04-01' and '2023-03-31';
+
+# first name pattern
+select * from employee
+where first_name like 'P____';
+
+# name condition
+select * from employee
+where first_name='Tom' or last_name='Altor';
+
+# concat project
+select concat(prjid,'_',prj_name) as prjid_prjname
+from project;
+
+# capital first letter
+select concat(upper(left(prj_name,1)),lower(substring(prj_name,2))) 
+from project;
+
+# employee formatted name
+select concat(empid,'_',upper(left(first_name,1)),
+lower(substring(first_name,2,2)),'_',upper(left(last_name,1)))
+from employee;
+
+# date difference
+select prjid, datediff(release_date,start_date) as days
+from project;
+
+# null handling
+select empid, first_name, ifnull(last_name,'-') from employee;
+
+# project full name
+select prjid,
+case
+when prj_name='ACMS' then 'Account & Credit Management System'
+when prj_name='OPS' then 'Order Processing System'
+when prj_name='ERP' then 'Enterprise Resource Planning'
+when prj_name='APMS' then 'Account & Payment Management System'
+when prj_name='MIS' then 'Management Information System'
+else 'Not Assigned'
+end
+from project;
+
+#activity 3
+
+select min(amount) from salary;
+
+select count(*) from emp_proj;
+
+select start_date, count(*) from project group by start_date;
+
+select empid, sum(amount) 
+from salary 
+group by empid 
+having sum(amount)>120000;
+
+select empid, sum(amount)
+from salary
+where date>'2020-02-01'
+group by empid
+having sum(amount)>120000;
+
+select * from employee order by first_name;
+
+select * from salary order by amount desc;
+
+select * from project order by prj_name, start_date;
+
+#activity 4
+
+# employees without project
+select * from employee e
+left join emp_proj ep on e.empid=ep.empid
+where ep.prjid is null;
+
+# projects without employees
+select * from project p
+left join emp_proj ep on p.prjid=ep.prjid
+where ep.empid is null;
+
+# employee project mapping
+select * from employee e
+join emp_proj ep on e.empid=ep.empid
+join project p on ep.prjid=p.prjid;
+
+
+#Activity 5
+
+# employees with at least one project
+select distinct e.*
+from employee e
+join emp_proj ep on e.empid=ep.empid;
+
+# salary less than average
+select * from salary
+where amount < (select avg(amount) from salary);
+
+ #Activity 6
+
+# views for tables
+create view emp_view as select * from employee;
+create view prj_view as select * from project;
+create view emp_prj_view as select * from emp_proj;
+create view sal_view as select * from salary;
+
+# join view
+create view emp_sal_view as
+select e.empid, e.first_name, s.amount
+from employee e
+join salary s on e.empid=s.empid;
