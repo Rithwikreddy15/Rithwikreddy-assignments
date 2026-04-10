@@ -20,6 +20,9 @@ insert into VendorDetails values
 ('vd003','Powernet','8787871212','pd004','5g Internet','850','A','4'),
 ('vd004','Gomobile','8686861313','pd005,pd007','Mobile phone,Feature phone','20000,5000','A,C','4,10');
 
+select * from VendorDetails;
+
+
 Now creating 1NF  (no multiple values in single column)
 
 create table Vendor_1NF (
@@ -44,6 +47,8 @@ insert into Vendor_1NF values
 ('vd003','Powernet','8787871212','pd004','5g Internet',850,'A',4),
 ('vd004','Gomobile','8686861313','pd005','Mobile phone',20000,'A',4),
 ('vd004','Gomobile','8686861313','pd007','Feature phone',5000,'C',10);
+
+select * from Vendor_1NF;
 
 
 Now 2NF  (removing partial dependencies)
@@ -104,6 +109,9 @@ insert into Vendor_Product values
 ('vd004','pd005'),
 ('vd004','pd007');
 
+select * from Vendor;
+select * from Product;
+select * from Vendor_Product;
 
 
 Now 3NF (removing transitive depencies)
@@ -132,4 +140,8 @@ create table Product_3NF (
     foreign key (Grade) references Grade_Discount(Grade)
 );
 
+select * from Grade_Discount;
+select * from Product_3NF;
+select * from Vendor_Product;
+select * from Vendor;
 
